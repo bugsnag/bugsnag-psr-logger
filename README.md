@@ -5,6 +5,11 @@
 The Bugsnag PHP PSR Logger provides a standard interface to logging to Bugsnag.
 
 
+## Documentation
+
+See our main PHP repo for all information regarding usage at https://github.com/bugsnag/bugsnag-php.
+
+
 ## Contributing
 
 All contributors are welcome! For information on how to build, test
