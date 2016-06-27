@@ -1,6 +1,6 @@
 <?php
 
-namespace Bugsnag\Psr;
+namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Exception;

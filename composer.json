@@ -20,12 +20,12 @@
     },
     "autoload": {
         "psr-4" : {
-            "Bugsnag\\Psr\\" : "src/"
+            "Bugsnag\\PsrLogger\\" : "src/"
         }
     },
     "autoload-dev": {
         "psr-4" : {
-            "Bugsnag\\Psr\\Tests\\" : "tests/"
+            "Bugsnag\\PsrLogger\\Tests\\" : "tests/"
         }
     },
     "extra": {
