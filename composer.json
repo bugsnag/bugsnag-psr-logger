@@ -1,5 +1,5 @@
 {
-    "name": "bugsnag/bugsnag-psr",
+    "name": "bugsnag/bugsnag-psr-logger",
     "type": "library",
     "description": "Official Bugsnag PHP PSR Logger.",
     "keywords": ["bugsnag", "exceptions", "errors", "logging", "tracking", "psr"],
