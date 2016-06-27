@@ -145,12 +145,17 @@ class Logger implements LoggerInterface
     {
         $severity = $this->getSeverity($level);
 
+        if (isset($context['title'])) {
+            $title = $context['title'];
+            unset($context['title']);
+        }
+
         if ($message instanceof Exception || $message instanceof Throwable) {
-            $this->client->notifyException($message, array_except($context, ['title']), $severity);
+            $this->client->notifyException($message, $context, $severity);
         } else {
             $msg = $this->formatMessage($message);
-            $title = array_get($context, 'title', str_limit((string) $msg));
-            $this->client->notifyError($title, $msg, array_except($context, ['title']), $severity);
+            $title = $this->limit(isset($title) ? $title : (string) $msg);
+            $this->client->notifyError($title, $msg, $context, $severity);
         }
     }
 
@@ -189,5 +194,21 @@ class Logger implements LoggerInterface
         }
 
         return $message;
+    }
+
+    /**
+     * Ensure the given string is less than 100 characters.
+     *
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function limit($str)
+    {
+        if (strlen($str) <= 100) {
+            return $str;
+        }
+
+        return rtrim(substr($str, 0, 97)).'...';
     }
 }
