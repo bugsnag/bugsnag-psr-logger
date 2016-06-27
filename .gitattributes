@@ -1,0 +1,15 @@
+* text=auto
+
+/example export-ignore
+/tests export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.styleci.yml
+/.travis.yml export-ignore
+/phpunit.xml.dist export-ignore
+/CONTRIBUTING.md export-ignore
+/CHANGELOG.md export-ignore
+/README.md export-ignore
+/circle.yml export-ignore
+/phpunit.xml.dist export-ignore
