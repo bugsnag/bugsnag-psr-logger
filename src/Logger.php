@@ -143,11 +143,11 @@ class Logger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        $severity = $this->getSeverity($level);
-
-        if (!$severity) {
+        if ($level === 'debug' || $level === 'info') {
             return;
         }
+
+        $severity = $this->getSeverity($level);
 
         if (isset($context['title'])) {
             $title = $context['title'];
@@ -168,21 +168,15 @@ class Logger implements LoggerInterface
      *
      * @param string $level
      *
-     * @return string|null
+     * @return string
      */
     protected function getSeverity($level)
     {
-        switch ($level) {
-            case 'warning':
-                return 'warning';
-            case 'notice':
-                return 'info';
-            case 'info':
-            case 'debug':
-                return;
-            default:
-                return 'error';
+        if ($level === 'warning') {
+            return $warning;
         }
+        
+        return 'error';
     }
 
     /**
