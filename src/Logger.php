@@ -172,8 +172,12 @@ class Logger implements LoggerInterface
      */
     protected function getSeverity($level)
     {
+        if ($level === 'notice') {
+            return 'info';
+        }
+
         if ($level === 'warning') {
-            return $warning;
+            return 'warning';
         }
 
         return 'error';
