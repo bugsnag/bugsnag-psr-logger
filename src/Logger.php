@@ -175,7 +175,7 @@ class Logger implements LoggerInterface
         if ($level === 'warning') {
             return $warning;
         }
-        
+
         return 'error';
     }
 
