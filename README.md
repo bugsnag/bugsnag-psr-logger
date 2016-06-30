@@ -14,7 +14,7 @@ See our main PHP repo for all information regarding usage at https://github.com/
 
 All contributors are welcome! For information on how to build, test
 and release `bugsnag-psr`, see our
-[contributing guide](https://github.com/bugsnag/bugsnag-psr/blob/master/CONTRIBUTING.md). Feel free to comment on [existing issues](https://github.com/bugsnag/bugsnag-psr/issues) for clarification or starting points.
+[contributing guide](CONTRIBUTING.md). Feel free to comment on [existing issues](https://github.com/bugsnag/bugsnag-psr/issues) for clarification or starting points.
 
 ## License
 
