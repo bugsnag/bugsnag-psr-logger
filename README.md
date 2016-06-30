@@ -1,5 +1,7 @@
 # Bugsnag PHP PSR Logger
-[![build status](https://travis-ci.org/bugsnag/bugsnag-psr.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-psr)
+
+[![Build Status](https://img.shields.io/travis/bugsnag/bugsnag-psr-logger/master.svg?style=flat-square)](https://travis-ci.org/bugsnag/bugsnag-psr-logger)
+[![StyleCI Status](https://styleci.io/repos/62041635/shield?branch=master)](https://styleci.io/repos/62041635)
 
 
 The Bugsnag PHP PSR Logger provides a standard interface to logging to Bugsnag.
