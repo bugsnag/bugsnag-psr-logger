@@ -4,7 +4,6 @@ namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 class BugsnagLogger extends AbstractLogger
