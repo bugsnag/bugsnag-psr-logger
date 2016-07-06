@@ -4,8 +4,8 @@ namespace Bugsnag\PsrLogger\Tests;
 
 use Bugsnag\PsrLogger\MultiLogger;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery;
+use PHPUnit_Framework_TestCase as TestCase;
 
 class MultiLoggerTest extends TestCase
 {
