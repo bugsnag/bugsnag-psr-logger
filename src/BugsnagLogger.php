@@ -42,19 +42,22 @@ class BugsnagLogger extends AbstractLogger
             return;
         }
 
-        $severity = $this->getSeverity($level);
-
         if (isset($context['title'])) {
             $title = $context['title'];
             unset($context['title']);
         }
 
+        $callback = function () use ($level, $context) {
+            $error->setMetaData($context);
+            $error->setSeverity($this->getSeverity($level));
+        };
+
         if ($message instanceof Exception || $message instanceof Throwable) {
-            $this->client->notifyException($message, $context, $severity);
+            $this->client->notifyException($message, $callback);
         } else {
             $msg = $this->formatMessage($message);
             $title = $this->limit(isset($title) ? $title : (string) $msg);
-            $this->client->notifyError($title, $msg, $context, $severity);
+            $this->client->notifyError($title, $msg, $callback);
         }
     }
 
