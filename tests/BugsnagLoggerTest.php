@@ -6,8 +6,8 @@ use Bugsnag\Client;
 use Bugsnag\PsrLogger\BugsnagLogger;
 use Exception;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery;
+use PHPUnit_Framework_TestCase as TestCase;
 
 class BugsnagLoggerTest extends TestCase
 {
