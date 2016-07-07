@@ -3,6 +3,7 @@
 namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
+use Bugsnag\Report;
 use Exception;
 use Throwable;
 
@@ -47,9 +48,9 @@ class BugsnagLogger extends AbstractLogger
             unset($context['title']);
         }
 
-        $callback = function () use ($level, $context) {
-            $error->setMetaData($context);
-            $error->setSeverity($this->getSeverity($level));
+        $callback = function (Report $report) use ($level, $context) {
+            $report->setMetaData($context);
+            $report->setSeverity($this->getSeverity($level));
         };
 
         if ($message instanceof Exception || $message instanceof Throwable) {
