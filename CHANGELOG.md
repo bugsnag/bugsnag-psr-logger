@@ -1,8 +1,6 @@
 Changelog
 =========
 
-## 1.0.0 (2016-XX-XX)
+## 1.0.0 (2016-07-07)
 
-1.0.0
------
--   First public release
+* First public release
