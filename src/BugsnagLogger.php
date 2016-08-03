@@ -39,13 +39,18 @@ class BugsnagLogger extends AbstractLogger
      */
     public function log($level, $message, array $context = [])
     {
-        if ($level === 'debug' || $level === 'info') {
-            return;
-        }
-
         if (isset($context['title'])) {
             $title = $context['title'];
             unset($context['title']);
+        }
+
+        $msg = $this->formatMessage($message);
+        $title = $this->limit(isset($title) ? $title : (string) $msg);
+
+        if ($level === 'debug' || $level === 'info') {
+            $this->client->leaveBreadcrumb($title, 'log', array_filter(array_merge(['message' => $message, 'severity' => $level], $context)));
+
+            return;
         }
 
         $callback = function (Report $report) use ($level, $context) {
@@ -56,8 +61,6 @@ class BugsnagLogger extends AbstractLogger
         if ($message instanceof Exception || $message instanceof Throwable) {
             $this->client->notifyException($message, $callback);
         } else {
-            $msg = $this->formatMessage($message);
-            $title = $this->limit(isset($title) ? $title : (string) $msg);
             $this->client->notifyError($title, $msg, $callback);
         }
     }

@@ -13,20 +13,22 @@ class BugsnagLoggerTest extends TestCase
 {
     use MockeryTrait;
 
-    public function testCanLog()
+    public function testError()
     {
         $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
 
         $client->shouldReceive('notifyException')->once();
+        $client->shouldNotReceive('leaveBreadcrumb');
 
         $logger->log('error', new Exception());
     }
 
-    public function testCanSkip()
+    public function testDebug()
     {
         $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
 
         $client->shouldNotReceive('notifyException');
+        $client->shouldReceive('leaveBreadcrumb')->once();
 
         $logger->log('debug', 'hi', ['foo' => 'bar']);
     }
@@ -36,6 +38,7 @@ class BugsnagLoggerTest extends TestCase
         $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
 
         $client->shouldReceive('notifyError')->once();
+        $client->shouldNotReceive('leaveBreadcrumb');
 
         $logger->alert('hi!', ['foo' => 'baz']);
     }
