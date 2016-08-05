@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 1.1.0 (2016-08-05)
+
+* Added support for breadrumbs
+
 ## 1.0.1 (2016-07-08)
 
 * Lowered the minimum PHP version to 5.5.0
