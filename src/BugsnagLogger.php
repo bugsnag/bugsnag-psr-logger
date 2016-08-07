@@ -44,6 +44,9 @@ class BugsnagLogger extends AbstractLogger
             unset($context['title']);
         }
 
+        $msg = $this->formatMessage($message);
+        $title = $this->limit(isset($title) ? $title : (string) $msg);
+
         if ($level === 'debug' || $level === 'info') {
             if ($message instanceof Exception || $message instanceof Throwable) {
                 $title = get_class($message);
@@ -67,8 +70,6 @@ class BugsnagLogger extends AbstractLogger
         if ($message instanceof Exception || $message instanceof Throwable) {
             $this->client->notifyException($message, $callback);
         } else {
-            $msg = $this->formatMessage($message);
-            $title = $this->limit(isset($title) ? $title : (string) $msg);
             $this->client->notifyError($title, $msg, $callback);
         }
     }
