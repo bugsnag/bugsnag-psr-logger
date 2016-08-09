@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.1.0 (2016-08-05)
+## 1.1.0 (2016-08-08)
 
 * Added support for breadrumbs
 
