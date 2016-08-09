@@ -48,7 +48,16 @@ class BugsnagLogger extends AbstractLogger
         $title = $this->limit(isset($title) ? $title : (string) $msg);
 
         if ($level === 'debug' || $level === 'info') {
-            $this->client->leaveBreadcrumb($title, 'log', array_filter(array_merge(['message' => $message, 'severity' => $level], $context)));
+            if ($message instanceof Exception || $message instanceof Throwable) {
+                $title = get_class($message);
+                $data = ['name' => $title, 'message' => $message->getMessage()];
+            } else {
+                $data = ['message' => $message];
+            }
+
+            $metaData = array_merge(array_merge($data, ['severity' => $level]), $context);
+
+            $this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
 
             return;
         }
