@@ -9,6 +9,7 @@ use Throwable;
 
 class BugsnagLogger extends AbstractLogger
 {
+
     /**
      * The bugsnag client instance.
      *
@@ -67,11 +68,16 @@ class BugsnagLogger extends AbstractLogger
             $report->setSeverity($this->getSeverity($level));
         };
 
+        $severityAttributes = [
+            'level' => $level
+        ];
+
         if ($message instanceof Exception || $message instanceof Throwable) {
-            $this->client->notifyException($message, $callback);
+            $report = Report::fromPHPThrowable($this->client->getConfig(), $message, Report::LOG_LEVEL, $severityAttributes);
         } else {
-            $this->client->notifyError($title, $msg, $callback);
+            $report = Report::fromNamedError($this->client->getConfig(), $title, $msg, Report::LOG_LEVEL, $severityAttributes);
         }
+        $this->client->notify($report, $callback);
     }
 
     /**
