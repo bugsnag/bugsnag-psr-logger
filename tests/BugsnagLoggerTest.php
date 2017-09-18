@@ -8,6 +8,15 @@ use Exception;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
+
+class ReportStub
+{
+    const LOG_LEVEL = 'log_level';
+}
 
 class BugsnagLoggerTest extends TestCase
 {
@@ -15,12 +24,21 @@ class BugsnagLoggerTest extends TestCase
 
     public function testError()
     {
-        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
+        $exception = new Exception();
 
-        $client->shouldReceive('notifyException')->once();
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromPHPThrowable')
+            ->with('config', $exception, 'log_level', ['level' => 'error'])
+            ->once()
+            ->andReturn($report);
+        
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->once()->andReturn('config');
+        $client->shouldReceive('notify')->once()->with($report, Mockery::any());
         $client->shouldNotReceive('leaveBreadcrumb');
 
-        $logger->log('error', new Exception());
+        $logger = new BugsnagLogger($client);
+        $logger->log('error', $exception);
     }
 
     public function testDebug()
@@ -35,11 +53,20 @@ class BugsnagLoggerTest extends TestCase
 
     public function testAlert()
     {
-        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
+        $exception = new Exception();
+        
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromNamedError')
+            ->with('config', Mockery::any(), Mockery::any(), 'log_level', ['level' => 'alert'])
+            ->once()
+            ->andReturn($report);
 
-        $client->shouldReceive('notifyError')->once();
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->once()->andReturn('config');
+        $client->shouldReceive('notify')->once()->with($report, Mockery::any());
         $client->shouldNotReceive('leaveBreadcrumb');
 
+        $logger = new BugsnagLogger($client);
         $logger->alert('hi!', ['foo' => 'baz']);
     }
 }
