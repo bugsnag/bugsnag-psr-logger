@@ -9,7 +9,6 @@ use Throwable;
 
 class BugsnagLogger extends AbstractLogger
 {
-
     /**
      * The bugsnag client instance.
      *
