@@ -23,12 +23,27 @@ class BugsnagLoggerTest extends TestCase
         $logger->log('error', new Exception());
     }
 
+    public function testContextExceptionOverride()
+    {
+        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
+
+        $exception = new Exception();
+        $client->shouldReceive('notifyException')
+            ->once()
+            ->withArgs([$exception, \Mockery::any()]);
+        $client->shouldNotReceive('leaveBreadcrumb');
+
+        $logger->log('error', 'terrible things!', ['exception' => $exception]);
+    }
+
     public function testDebug()
     {
         $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
 
         $client->shouldNotReceive('notifyException');
-        $client->shouldReceive('leaveBreadcrumb')->once();
+        $client->shouldReceive('leaveBreadcrumb')
+            ->once()
+            ->withArgs(['Log debug', 'log', ['foo' => 'bar', 'severity' => 'debug', 'message' => 'hi']]);
 
         $logger->log('debug', 'hi', ['foo' => 'bar']);
     }
@@ -37,7 +52,9 @@ class BugsnagLoggerTest extends TestCase
     {
         $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
 
-        $client->shouldReceive('notifyError')->once();
+        $client->shouldReceive('notifyError')
+            ->once()
+            ->withArgs(['Log alert', 'hi!', \Mockery::any()]);
         $client->shouldNotReceive('leaveBreadcrumb');
 
         $logger->alert('hi!', ['foo' => 'baz']);
