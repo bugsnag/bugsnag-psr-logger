@@ -67,14 +67,17 @@ class BugsnagLogger extends AbstractLogger
             $report->setSeverity($this->getSeverity($level));
         };
 
-        $severityAttributes = [
-            'level' => $level
+        $severityReason = [
+            'type' => 'log',
+            'attributes' => [
+                'level' => $level
+            ]
         ];
 
         if ($message instanceof Exception || $message instanceof Throwable) {
-            $report = Report::fromPHPThrowable($this->client->getConfig(), $message, Report::LOG_LEVEL, $severityAttributes);
+            $report = Report::fromPHPThrowable($this->client->getConfig(), $message, false, $severityReason);
         } else {
-            $report = Report::fromNamedError($this->client->getConfig(), $title, $msg, Report::LOG_LEVEL, $severityAttributes);
+            $report = Report::fromNamedError($this->client->getConfig(), $title, $msg, false, $severityReason);
         }
         $this->client->notify($report, $callback);
     }

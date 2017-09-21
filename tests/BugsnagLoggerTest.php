@@ -28,7 +28,7 @@ class BugsnagLoggerTest extends TestCase
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromPHPThrowable')
-            ->with('config', $exception, 'log_level', ['level' => 'error'])
+            ->with('config', $exception, false, ['type' => 'log', 'attributes' => ['level' => 'error']])
             ->once()
             ->andReturn($report);
         
@@ -57,7 +57,7 @@ class BugsnagLoggerTest extends TestCase
         
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromNamedError')
-            ->with('config', Mockery::any(), Mockery::any(), 'log_level', ['level' => 'alert'])
+            ->with('config', Mockery::any(), Mockery::any(), false, ['type' => 'log', 'attributes' => ['level' => 'alert']])
             ->once()
             ->andReturn($report);
 
