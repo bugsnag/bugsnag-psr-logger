@@ -62,11 +62,6 @@ class BugsnagLogger extends AbstractLogger
             return;
         }
 
-        $callback = function (Report $report) use ($level, $context) {
-            $report->setMetaData($context);
-            $report->setSeverity($this->getSeverity($level));
-        };
-
         $severityReason = [
             'type' => 'log',
             'attributes' => [
@@ -79,7 +74,11 @@ class BugsnagLogger extends AbstractLogger
         } else {
             $report = Report::fromNamedError($this->client->getConfig(), $title, $msg, false, $severityReason);
         }
-        $this->client->notify($report, $callback);
+
+        $report->setMetaData($context);
+        $report->setSeverity($this->getSeverity($level));
+
+        $this->client->notify($report);
     }
 
     /**
