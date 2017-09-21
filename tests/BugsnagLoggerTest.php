@@ -36,6 +36,18 @@ class BugsnagLoggerTest extends TestCase
         $logger->log('error', 'terrible things!', ['exception' => $exception]);
     }
 
+    public function testInfo()
+    {
+        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
+
+        $client->shouldNotReceive('notifyException');
+        $client->shouldReceive('leaveBreadcrumb')
+            ->once()
+            ->withArgs(['Log info', 'log', ['foo' => 'bar', 'message' => 'hi']]);
+
+        $logger->log('info', 'hi', ['foo' => 'bar']);
+    }
+
     public function testDebug()
     {
         $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
@@ -43,7 +55,7 @@ class BugsnagLoggerTest extends TestCase
         $client->shouldNotReceive('notifyException');
         $client->shouldReceive('leaveBreadcrumb')
             ->once()
-            ->withArgs(['Log debug', 'log', ['foo' => 'bar', 'severity' => 'debug', 'message' => 'hi']]);
+            ->withArgs(['Log debug', 'log', ['foo' => 'bar', 'message' => 'hi']]);
 
         $logger->log('debug', 'hi', ['foo' => 'bar']);
     }

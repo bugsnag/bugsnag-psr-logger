@@ -60,7 +60,7 @@ class BugsnagLogger extends AbstractLogger
                 $data = ['message' => $message];
             }
 
-            $metaData = array_merge(array_merge($data, ['severity' => $level]), $context);
+            $metaData = array_merge($data, $context);
 
             $this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
 
