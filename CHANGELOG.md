@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 1.1.1 (2017-09-22)
+
+* Support overriding using message parameter as exception by passing an
+  exception as context
+  [#20](https://github.com/bugsnag/bugsnag-psr-logger/pull/20)
+
 ## 1.1.0 (2016-08-08)
 
 * Added support for breadrumbs
