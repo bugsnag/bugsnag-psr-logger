@@ -8,16 +8,16 @@ use Exception;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 
 class ReportStub
 {
     const LOG_LEVEL = 'log_level';
 }
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class BugsnagLoggerTest extends TestCase
 {
     use MockeryTrait;
