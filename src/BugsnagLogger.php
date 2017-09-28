@@ -46,7 +46,7 @@ class BugsnagLogger extends AbstractLogger
         }
 
         $exception = null;
-        if (isset($context['exception'])) {
+        if (isset($context['exception']) && ($context['exception'] instanceof Exception || $context['exception'] instanceof Throwable)) {
             $exception = $context['exception'];
         } else if ($message instanceof Exception || $message instanceof Throwable) {
             $exception = $message;
