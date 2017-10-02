@@ -39,23 +39,28 @@ class BugsnagLogger extends AbstractLogger
      */
     public function log($level, $message, array $context = [])
     {
+        $title = 'Log ' . $level;
         if (isset($context['title'])) {
             $title = $context['title'];
             unset($context['title']);
         }
 
-        $msg = $this->formatMessage($message);
-        $title = $this->limit(isset($title) ? $title : (string) $msg);
+        $exception = null;
+        if (isset($context['exception'])) {
+            $exception = $context['exception'];
+        } else if ($message instanceof Exception || $message instanceof Throwable) {
+            $exception = $message;
+        }
 
         if ($level === 'debug' || $level === 'info') {
-            if ($message instanceof Exception || $message instanceof Throwable) {
-                $title = get_class($message);
-                $data = ['name' => $title, 'message' => $message->getMessage()];
+            if ($exception !== null) {
+                $title = get_class($exception);
+                $data = ['name' => $title, 'message' => $exception->getMessage()];
             } else {
                 $data = ['message' => $message];
             }
 
-            $metaData = array_merge(array_merge($data, ['severity' => $level]), $context);
+            $metaData = array_merge($data, $context);
 
             $this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
 
@@ -69,14 +74,15 @@ class BugsnagLogger extends AbstractLogger
             ]
         ];
 
-        if ($message instanceof Exception || $message instanceof Throwable) {
-            $report = Report::fromPHPThrowable($this->client->getConfig(), $message, false, $severityReason);
+        if ($exception !== null) {
+            $report = Report::fromPHPThrowable($this->client->getConfig(), $exception);
         } else {
-            $report = Report::fromNamedError($this->client->getConfig(), $title, $msg, false, $severityReason);
+            $report = Report::fromNamedError($this->client->getConfig(), $title, $this->formatMessage($message));
         }
 
         $report->setMetaData($context);
         $report->setSeverity($this->getSeverity($level));
+        $report->setSeverityReason($severityReason);
 
         $this->client->notify($report);
     }
