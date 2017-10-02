@@ -9,30 +9,60 @@ use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 
+class ReportStub
+{
+    const LOG_LEVEL = 'log_level';
+}
+
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class BugsnagLoggerTest extends TestCase
 {
     use MockeryTrait;
 
     public function testError()
     {
-        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
+        $exception = new Exception();
 
-        $client->shouldReceive('notifyException')->once();
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromPHPThrowable')
+            ->with('config', $exception)
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'error']]);
+        
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->once()->andReturn('config');
+        $client->shouldReceive('notify')->once()->with($report);
         $client->shouldNotReceive('leaveBreadcrumb');
 
-        $logger->log('error', new Exception());
+        $logger = new BugsnagLogger($client);
+        $logger->log('error', $exception);
     }
 
     public function testContextExceptionOverride()
     {
-        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
-
         $exception = new Exception();
-        $client->shouldReceive('notifyException')
-            ->once()
-            ->withArgs([$exception, \Mockery::any()]);
-        $client->shouldNotReceive('leaveBreadcrumb');
 
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromPHPThrowable')
+            ->with('config', $exception)
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'error']]);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->once()->andReturn('config');
+        $client->shouldReceive('notify')->once()->with($report);
+        $client->shouldNotReceive('leaveBreadcrumb');
+        
+        $logger = new BugsnagLogger($client);
         $logger->log('error', 'terrible things!', ['exception' => $exception]);
     }
 
@@ -62,13 +92,23 @@ class BugsnagLoggerTest extends TestCase
 
     public function testAlert()
     {
-        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
-
-        $client->shouldReceive('notifyError')
+        $exception = new Exception();
+        
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromNamedError')
+            ->with('config', Mockery::any(), Mockery::any())
             ->once()
-            ->withArgs(['Log alert', 'hi!', \Mockery::any()]);
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'alert']]);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->once()->andReturn('config');
+        $client->shouldReceive('notify')->once()->with($report);
         $client->shouldNotReceive('leaveBreadcrumb');
 
+        $logger = new BugsnagLogger($client);
         $logger->alert('hi!', ['foo' => 'baz']);
     }
 }

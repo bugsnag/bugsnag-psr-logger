@@ -67,16 +67,24 @@ class BugsnagLogger extends AbstractLogger
             return;
         }
 
-        $callback = function (Report $report) use ($level, $context) {
-            $report->setMetaData($context);
-            $report->setSeverity($this->getSeverity($level));
-        };
+        $severityReason = [
+            'type' => 'log',
+            'attributes' => [
+                'level' => $level
+            ]
+        ];
 
         if ($exception !== null) {
-            $this->client->notifyException($exception, $callback);
+            $report = Report::fromPHPThrowable($this->client->getConfig(), $exception);
         } else {
-            $this->client->notifyError($title, $this->formatMessage($message), $callback);
+            $report = Report::fromNamedError($this->client->getConfig(), $title, $this->formatMessage($message));
         }
+
+        $report->setMetaData($context);
+        $report->setSeverity($this->getSeverity($level));
+        $report->setSeverityReason($severityReason);
+
+        $this->client->notify($report);
     }
 
     /**
