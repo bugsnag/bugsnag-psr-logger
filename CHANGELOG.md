@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 1.2.0 (2017-10-02)
+
+* Added severity data for handled/unhandled feature
+  [#19](https://github.com/bugsnag/bugsnag-psr-logger/pull/19)
+
 ## 1.1.1 (2017-09-22)
 
 * Support overriding using message parameter as exception by passing an
