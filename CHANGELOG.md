@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## 1.2.1 (2017-10-06)
+
+### Bug fixes
+
+* Only override message using `$exception` from context if its an instance of
+  Exception or Throwable
+  [#21](https://github.com/bugsnag/bugsnag-psr-logger/pull/21)
+  [Josh Brown](https://github.com/joshbrw)
+
 ## 1.2.0 (2017-10-02)
 
 * Added severity data for handled/unhandled feature
