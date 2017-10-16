@@ -33,7 +33,7 @@ $logger.error('An error occurred');
 ```
 
 
-If you wish to use a separate logger alongside `BugsnagLogger` you will need to use `MutliLogger`.  By passing it an array of `Logger` objects on construction, `MultiLogger` will call into each passed `Logger` in turn when a message is logged.
+If you wish to use a separate logger alongside `BugsnagLogger` you will need to use `MultiLogger`.  By passing it an array of `Logger` objects on construction, `MultiLogger` will call into each passed `Logger` in turn when a message is logged.
 
 ```php
 $logger = new Bugsnag\PsrLogger\BugsnagLogger($bugsnag);
@@ -41,7 +41,7 @@ $mySecondLogger = new Logger();
 $multiLogger = new Bugsnag\PsrLogger\MultiLogger([$logger, $mySecondLogger]);
 
 # Will log to $mySecondLogger and send a notification to bugsnag through $logger
-$mutliLogger.error('An error occurred');
+$multiLogger.error('An error occurred');
 ```
 
 
