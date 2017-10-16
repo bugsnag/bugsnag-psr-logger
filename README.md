@@ -29,7 +29,7 @@ $bugsnag = Bugsnag\Client::make('YOUR-API-KEY-HERE');
 $logger = new Bugsnag\PsrLogger\BugsnagLogger($bugsnag);
 
 # Will send a notification to bugsnag
-$logger.log('error', 'An error occurred');
+$logger.error('An error occurred');
 ```
 
 
@@ -41,7 +41,7 @@ $mySecondLogger = new Logger();
 $multiLogger = new Bugsnag\PsrLogger\MultiLogger([$logger, $mySecondLogger]);
 
 # Will log to $mySecondLogger and send a notification to bugsnag through $logger
-$mutliLogger.log('error', 'An error occurred');
+$mutliLogger.error('An error occurred');
 ```
 
 
