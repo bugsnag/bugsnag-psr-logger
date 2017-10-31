@@ -28,7 +28,7 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
 
         $config = Mockery::mock(Configuration::class);
-        $config->logThreshold = null;
+        $config->logLevel = null;
         $config->logWarningLevel = null;
         $config->logErrorLevel = null;
 
@@ -55,7 +55,7 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
         
         $config = Mockery::mock(Configuration::class);
-        $config->logThreshold = null;
+        $config->logLevel = null;
         $config->logWarningLevel = null;
         $config->logErrorLevel = null;
 
@@ -82,7 +82,7 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
 
         $config = Mockery::mock(Configuration::class);
-        $config->logThreshold = null;
+        $config->logLevel = null;
         $config->logWarningLevel = null;
         $config->logErrorLevel = null;
 
@@ -107,7 +107,7 @@ class BugsnagLoggerTest extends TestCase
     public function testInfo()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->logThreshold = null;
+        $config->logLevel = null;
         $config->logWarningLevel = null;
         $config->logErrorLevel = null;
 
@@ -125,7 +125,7 @@ class BugsnagLoggerTest extends TestCase
     public function testDebug()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->logThreshold = null;
+        $config->logLevel = null;
         $config->logWarningLevel = null;
         $config->logErrorLevel = null;
 
@@ -145,7 +145,7 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
 
         $config = Mockery::mock(Configuration::class);
-        $config->logThreshold = null;
+        $config->logLevel = null;
         $config->logWarningLevel = null;
         $config->logErrorLevel = null;
         
@@ -165,5 +165,84 @@ class BugsnagLoggerTest extends TestCase
 
         $logger = new BugsnagLogger($client);
         $logger->alert('hi!', ['foo' => 'baz']);
+    }
+
+    public function testLogLevel()
+    {
+        $config = Mockery::mock(Configuration::class);
+        $config->logLevel = 'error';
+        $config->logWarningLevel = null;
+        $config->logErrorLevel = null;
+
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromNamedError')
+            ->with($config, Mockery::any(), Mockery::any())
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'error']]);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->andReturn($config);
+        $client->shouldReceive('notify')->once()->with($report);
+        $client->shouldReceive('leaveBreadcrumb')
+            ->once()
+            ->withArgs(['Log warning', 'log', ['foo' => 'baz', 'message' => 'hi']]);
+
+        $logger = new BugsnagLogger($client);
+        $logger->warning('hi', ['foo' => 'baz']);
+
+        $logger->error('hi', ['bar' => 'fuu']);
+    }
+
+    public function testWarningLevel()
+    {
+        $config = Mockery::mock(Configuration::class);
+        $config->logLevel = null;
+        $config->logWarningLevel = 'notice';
+        $config->logErrorLevel = null;
+
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromNamedError')
+            ->with($config, Mockery::any(), Mockery::any())
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('warning');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'notice']]);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->andReturn($config);
+        $client->shouldReceive('notify')->once()->with($report);
+        $client->shouldNotReceive('leaveBreadcrumb');
+
+        $logger = new BugsnagLogger($client);
+        $logger->notice('notice', ['type' => 'notice']);
+    }
+
+    public function testErrorLevel()
+    {
+        $config = Mockery::mock(Configuration::class);
+        $config->logLevel = null;
+        $config->logWarningLevel = null;
+        $config->logErrorLevel = 'warning';
+
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromNamedError')
+            ->with($config, Mockery::any(), Mockery::any())
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'warning']]);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->andReturn($config);
+        $client->shouldReceive('notify')->once()->with($report);
+        $client->shouldNotReceive('leaveBreadcrumb');
+
+        $logger = new BugsnagLogger($client);
+        $logger->warning('warning', ['type' => 'warning']);
     }
 }
