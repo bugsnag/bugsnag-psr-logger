@@ -4,11 +4,24 @@ namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Bugsnag\Report;
+use Psr\Log\LogLevel;
 use Exception;
 use Throwable;
 
 class BugsnagLogger extends AbstractLogger
 {
+
+    const LevelOrder = [
+        'debug',
+        'info',
+        'notice',
+        'warning',
+        'error',
+        'critical',
+        'alert',
+        'emergency'
+    ];
+
     /**
      * The bugsnag client instance.
      *
@@ -17,15 +30,43 @@ class BugsnagLogger extends AbstractLogger
     protected $client;
 
     /**
+     * The minimum level required to notify bugsnag.
+     * 
+     * @var string
+     */
+    protected $threshold;
+
+    /**
+     * The minimum level required to set the notification level to 'warning'.
+     * 
+     * @var string
+     */
+    protected $warningLevel;
+
+    /**
+     * The minimum level required to set the notification level to 'error'.
+     * 
+     * @var string
+     */
+    protected $errorLevel;
+
+    /**
      * Create a new bugsnag logger instance.
      *
      * @param \Bugsnag\Client $client
+     * @param string $threshold (optional)
+     * @param string $warningLevel (optional)
+     * @param string $errorLevel (optional)
      *
      * @return void
      */
     public function __construct(Client $client)
     {
         $this->client = $client;
+        $config = $this->client->getConfig();
+        $this->threshold = !is_null($config->logThreshold) ? $config->logThreshold : 'notice';
+        $this->warningLevel = !is_null($config->logWarningLevel) ? $config->logWarningLevel : 'warning';
+        $this->errorLevel = !is_null($config->logErrorLevel) ? $config->logErrorLevel : 'error';
     }
 
     /**
@@ -52,7 +93,8 @@ class BugsnagLogger extends AbstractLogger
             $exception = $message;
         }
 
-        if ($level === 'debug' || $level === 'info') {
+        # Below theshold, leave a breadcrumb but don't send a notification
+        if (!$this->aboveLevel($level, $this->threshold)) {
             if ($exception !== null) {
                 $title = get_class($exception);
                 $data = ['name' => $title, 'message' => $exception->getMessage()];
@@ -88,6 +130,16 @@ class BugsnagLogger extends AbstractLogger
     }
 
     /**
+     * Checks whether the 
+     */
+    protected function aboveLevel($level, $base)
+    {
+        $baseIndex = array_search($base, $this::LevelOrder);
+        $levelIndex = array_search($level, $this::LevelOrder);
+        return $levelIndex >= $baseIndex;
+    }
+
+    /**
      * Get the severity for the logger.
      *
      * @param string $level
@@ -96,15 +148,13 @@ class BugsnagLogger extends AbstractLogger
      */
     protected function getSeverity($level)
     {
-        if ($level === 'notice') {
+        if (!$this->aboveLevel($level, $this->warningLevel)) {
             return 'info';
-        }
-
-        if ($level === 'warning') {
+        } elseif (!$this->aboveLevel($level, $this->errorLevel)) {
             return 'warning';
+        } else {
+            return 'error';
         }
-
-        return 'error';
     }
 
     /**
