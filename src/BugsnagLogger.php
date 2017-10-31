@@ -4,7 +4,6 @@ namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Bugsnag\Report;
-use Psr\Log\LogLevel;
 use Exception;
 use Throwable;
 
@@ -64,7 +63,7 @@ class BugsnagLogger extends AbstractLogger
     {
         $this->client = $client;
         $config = $this->client->getConfig();
-        $this->threshold = !is_null($config->logThreshold) ? $config->logThreshold : 'notice';
+        $this->threshold = !is_null($config->logLevel) ? $config->logLevel : 'notice';
         $this->warningLevel = !is_null($config->logWarningLevel) ? $config->logWarningLevel : 'warning';
         $this->errorLevel = !is_null($config->logErrorLevel) ? $config->logErrorLevel : 'error';
     }
