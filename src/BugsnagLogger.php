@@ -53,9 +53,6 @@ class BugsnagLogger extends AbstractLogger
      * Create a new bugsnag logger instance.
      *
      * @param \Bugsnag\Client $client
-     * @param string $threshold (optional)
-     * @param string $warningLevel (optional)
-     * @param string $errorLevel (optional)
      *
      * @return void
      */
@@ -63,9 +60,12 @@ class BugsnagLogger extends AbstractLogger
     {
         $this->client = $client;
         $config = $this->client->getConfig();
-        $this->threshold = !is_null($config->logLevel) ? $config->logLevel : 'notice';
-        $this->warningLevel = !is_null($config->logWarningLevel) ? $config->logWarningLevel : 'warning';
-        $this->errorLevel = !is_null($config->logErrorLevel) ? $config->logErrorLevel : 'error';
+        $logLevel = $config->getLogLevel();
+        $warningLevel = $config->getLogWarningLevel();
+        $errorLevel = $config->getLogErrorLevel();
+        $this->threshold = !is_null($logLevel) ? $logLevel : 'notice';
+        $this->warningLevel = !is_null($warningLevel) ? $warningLevel : 'warning';
+        $this->errorLevel = !is_null($errorLevel) ? $errorLevel : 'error';
     }
 
     /**
