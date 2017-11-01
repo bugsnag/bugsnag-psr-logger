@@ -33,7 +33,7 @@ class BugsnagLogger extends AbstractLogger
      * 
      * @var string
      */
-    protected $threshold;
+    protected $notifyLevel;
 
     /**
      * The minimum level required to set the notification level to 'warning'.
@@ -59,13 +59,10 @@ class BugsnagLogger extends AbstractLogger
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $config = $this->client->getConfig();
-        $logLevel = $config->getLogLevel();
-        $warningLevel = $config->getLogWarningLevel();
-        $errorLevel = $config->getLogErrorLevel();
-        $this->threshold = !is_null($logLevel) ? $logLevel : 'notice';
-        $this->warningLevel = !is_null($warningLevel) ? $warningLevel : 'warning';
-        $this->errorLevel = !is_null($errorLevel) ? $errorLevel : 'error';
+        $logLevels = $this->client->getConfig()->getLogLevels();
+        $this->notifyLevel = !is_null($logLevels["notifyLevel"]) ? $logLevels["notifyLevel"] : 'notice';
+        $this->warningLevel = !is_null($logLevels["warningLevel"]) ? $logLevels["warningLevel"] : 'warning';
+        $this->errorLevel = !is_null($logLevels["errorLevel"]) ? $logLevels["errorLevel"] : 'error';
     }
 
     /**
@@ -93,7 +90,7 @@ class BugsnagLogger extends AbstractLogger
         }
 
         # Below theshold, leave a breadcrumb but don't send a notification
-        if (!$this->aboveLevel($level, $this->threshold)) {
+        if (!$this->aboveLevel($level, $this->notifyLevel)) {
             if ($exception !== null) {
                 $title = get_class($exception);
                 $data = ['name' => $title, 'message' => $exception->getMessage()];

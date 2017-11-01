@@ -28,9 +28,11 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
 
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromPHPThrowable')
@@ -55,9 +57,12 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
         
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
+
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromPHPThrowable')
@@ -82,9 +87,12 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
 
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
+
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromNamedError')
@@ -107,9 +115,12 @@ class BugsnagLoggerTest extends TestCase
     public function testInfo()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
+
 
         $client = Mockery::mock(Client::class);
         $client->shouldReceive('getConfig')->andReturn($config);
@@ -125,9 +136,12 @@ class BugsnagLoggerTest extends TestCase
     public function testDebug()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
+
 
         $client = Mockery::mock(Client::class);
         $client->shouldReceive('getConfig')->andReturn($config);
@@ -145,9 +159,12 @@ class BugsnagLoggerTest extends TestCase
         $exception = new Exception();
 
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
+
         
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromNamedError')
@@ -170,9 +187,11 @@ class BugsnagLoggerTest extends TestCase
     public function testLogLevel()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn('error');
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => "error",
+            "warningLevel" => null,
+            "errorLevel" => null
+        ]);
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromNamedError')
@@ -199,9 +218,11 @@ class BugsnagLoggerTest extends TestCase
     public function testWarningLevel()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn('notice');
-        $config->shouldReceive('getLogErrorLevel')->andReturn(null);
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => "notice",
+            "errorLevel" => null
+        ]);
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromNamedError')
@@ -224,9 +245,11 @@ class BugsnagLoggerTest extends TestCase
     public function testErrorLevel()
     {
         $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        $config->shouldReceive('getLogWarningLevel')->andReturn(null);
-        $config->shouldReceive('getLogErrorLevel')->andReturn('warning');
+        $config->shouldReceive('getLogLevels')->andReturn([
+            "notifyLevel" => null,
+            "warningLevel" => null,
+            "errorLevel" => "warning"
+        ]);
 
         $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
         $report->shouldReceive('fromNamedError')
