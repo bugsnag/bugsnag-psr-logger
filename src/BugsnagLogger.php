@@ -10,17 +10,6 @@ use Throwable;
 class BugsnagLogger extends AbstractLogger
 {
 
-    const LevelOrder = [
-        'debug',
-        'info',
-        'notice',
-        'warning',
-        'error',
-        'critical',
-        'alert',
-        'emergency'
-    ];
-
     /**
      * The bugsnag client instance.
      *
@@ -130,8 +119,18 @@ class BugsnagLogger extends AbstractLogger
      */
     protected function aboveLevel($level, $base)
     {
-        $baseIndex = array_search($base, $this::LevelOrder);
-        $levelIndex = array_search($level, $this::LevelOrder);
+        $levelOrder = [
+            'debug',
+            'info',
+            'notice',
+            'warning',
+            'error',
+            'critical',
+            'alert',
+            'emergency'
+        ];
+        $baseIndex = array_search($base, $LevelOrder);
+        $levelIndex = array_search($level, $LevelOrder);
         return $levelIndex >= $baseIndex;
     }
 
