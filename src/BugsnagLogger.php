@@ -80,7 +80,7 @@ class BugsnagLogger extends AbstractLogger
             $report = Report::fromNamedError($this->client->getConfig(), $title, $this->formatMessage($message));
         }
 
-        $report->setMetaData($context);
+        $report->setMetaData($this->formatMetaData($context));
         $report->setSeverity($this->getSeverity($level));
         $report->setSeverityReason($severityReason);
 
@@ -121,6 +121,27 @@ class BugsnagLogger extends AbstractLogger
         }
 
         return $message;
+    }
+
+    /**
+     * bugsnag can't handle multidimensional array as a custom metadata
+     * 
+     * @param array $multiArray
+     * @return array
+     */
+    protected function formatMetaData($multiArray)
+    {
+        $ritit = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($multiArray));
+        $result = [];
+        foreach ($ritit as $leafValue) {
+            $keys = [];
+            foreach (range(0, $ritit->getDepth()) as $depth) {
+                $keys[] = $ritit->getSubIterator($depth)->key();
+            }
+            $result[ join('.', $keys) ] = $leafValue;
+        }
+
+        return $result;
     }
 
     /**
