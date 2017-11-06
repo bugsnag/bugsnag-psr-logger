@@ -68,15 +68,25 @@ class BugsnagLoggerTest extends TestCase
 
     public function testContextExceptionInvalidOverride()
     {
-        $logger = new BugsnagLogger($client = Mockery::mock(Client::class));
+        $exception = new Exception();
+
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromNamedError')
+            ->with('config', Mockery::any(), Mockery::any())
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'error']]);
 
         $exception = new Exception();
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->once()->andReturn('config');
         $client->shouldNotReceive('notifyException');
         $client->shouldNotReceive('leaveBreadcrumb');
-        $client->shouldReceive('notifyError')
-            ->once()
-            ->withArgs(['Log error', 'terrible things!', \Mockery::any()]);
+        $client->shouldReceive('notify')->once()->with($report);
 
+        $logger = new BugsnagLogger($client);
         $logger->log('error', 'terrible things!', ['exception' => 'not an exception']);
     }
 
