@@ -129,8 +129,8 @@ class BugsnagLogger extends AbstractLogger
             'alert',
             'emergency'
         ];
-        $baseIndex = array_search($base, $LevelOrder);
-        $levelIndex = array_search($level, $LevelOrder);
+        $baseIndex = array_search($base, $levelOrder);
+        $levelIndex = array_search($level, $levelOrder);
         return $levelIndex >= $baseIndex;
     }
 
