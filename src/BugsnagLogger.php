@@ -22,7 +22,7 @@ class BugsnagLogger extends AbstractLogger
      * 
      * @var string
      */
-    protected $notifyLevel;
+    protected $notifyLevel = \Psr\Log\LogLevel::NOTICE;
 
     /**
      * Create a new bugsnag logger instance.
@@ -34,8 +34,11 @@ class BugsnagLogger extends AbstractLogger
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $logNotifyLevel = $this->client->getConfig()->getLogLevel();
-        $this->notifyLevel = !is_null($logNotifyLevel) ? $logNotifyLevel : 'notice';
+    }
+
+    public function setNotifyLevel($notifyLevel)
+    {
+        $this->notifyLevel = $notifyLevel;
     }
 
     /**

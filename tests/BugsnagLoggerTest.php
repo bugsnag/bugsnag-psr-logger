@@ -51,7 +51,7 @@ class BugsnagLoggerTest extends TestCase
     public function testContextExceptionOverride()
     {
         $exception = new Exception();
-        
+
         $config = Mockery::mock(Configuration::class);
         $config->shouldReceive('getLogLevel')->andReturn(null);
 
@@ -68,7 +68,7 @@ class BugsnagLoggerTest extends TestCase
         $client->shouldReceive('getConfig')->andReturn($config);
         $client->shouldReceive('notify')->once()->with($report);
         $client->shouldNotReceive('leaveBreadcrumb');
-        
+
         $logger = new BugsnagLogger($client);
         $logger->log('error', 'terrible things!', ['exception' => $exception]);
     }
@@ -133,52 +133,103 @@ class BugsnagLoggerTest extends TestCase
     public function testAlert()
     {
         $exception = new Exception();
+        $config = Mockery::mock(Configuration::class)->makePartial();
+        $client = Mockery::mock(Client::class)->makePartial();
 
-        $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn(null);
-        
-        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
-        $report->shouldReceive('fromNamedError')
-            ->with($config, Mockery::any(), Mockery::any())
-            ->once()
-            ->andReturn($report);
-        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
-        $report->shouldReceive('setSeverity')->once()->with('error');
-        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'alert']]);
-
-        $client = Mockery::mock(Client::class);
         $client->shouldReceive('getConfig')->andReturn($config);
-        $client->shouldReceive('notify')->once()->with($report);
         $client->shouldNotReceive('leaveBreadcrumb');
+        $client->shouldReceive('notify')->once()
+            ->andReturnUsing(function ($report) {
+                $this->assertSameInBlock('error', $report->getSeverity());
+                $this->assertSameInBlock('hi!', $report->getMessage());
+                $this->assertSameInBlock('Log alert', $report->getName());
+                $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
+                $this->assertSameInBlock('alert', $report->getSeverityReason()['attributes']['level']);
+                $this->assertSameInBlock('baz', $report->getMetaData()['foo']);
+        });
 
         $logger = new BugsnagLogger($client);
         $logger->alert('hi!', ['foo' => 'baz']);
     }
 
-    public function testLogLevel()
+    public function testSetNotifyLevel()
     {
-        $config = Mockery::mock(Configuration::class);
-        $config->shouldReceive('getLogLevel')->andReturn('error');
-
-        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
-        $report->shouldReceive('fromNamedError')
-            ->with($config, Mockery::any(), Mockery::any())
-            ->once()
-            ->andReturn($report);
-        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
-        $report->shouldReceive('setSeverity')->once()->with('error');
-        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'error']]);
-
-        $client = Mockery::mock(Client::class);
+        $config = Mockery::mock(Configuration::class)->makePartial();
+        $client = Mockery::mock(Client::class)->makePartial();
         $client->shouldReceive('getConfig')->andReturn($config);
-        $client->shouldReceive('notify')->once()->with($report);
+
+        $logger = new BugsnagLogger($client);
+        $logger->setNotifyLevel(\Psr\Log\LogLevel::ERROR);
+
+        $client->shouldReceive('notify')->once()
+            ->andReturnUsing(function ($report) {
+                $this->assertSameInBlock('error', $report->getSeverity());
+                $this->assertSameInBlock('Log alert', $report->getName());
+                $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
+                $this->assertSameInBlock('alert', $report->getSeverityReason()['attributes']['level']);
+                $this->assertSameInBlock('fuu', $report->getMetaData()['bar']);
+        });
+        $logger->alert('hi', ['bar' => 'fuu']);
+
+        $client->shouldReceive('notify')->once()
+            ->andReturnUsing(function ($report) {
+                $this->assertSameInBlock('error', $report->getSeverity());
+                $this->assertSameInBlock('Log emergency', $report->getName());
+                $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
+                $this->assertSameInBlock('emergency', $report->getSeverityReason()['attributes']['level']);
+                $this->assertSameInBlock('fii', $report->getMetaData()['bar']);
+            });
+        $logger->emergency('hi', ['bar' => 'fii']);
+
+        $client->shouldReceive('notify')->once()
+            ->andReturnUsing(function ($report) {
+                $this->assertSameInBlock('error', $report->getSeverity());
+                $this->assertSameInBlock('Log critical', $report->getName());
+                $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
+                $this->assertSameInBlock('critical', $report->getSeverityReason()['attributes']['level']);
+                $this->assertSameInBlock('foo', $report->getMetaData()['bar']);
+            });
+        $logger->critical('hi', ['bar' => 'foo']);
+
+        $client->shouldReceive('notify')->once()
+            ->andReturnUsing(function ($report) {
+                $this->assertSameInBlock('error', $report->getSeverity());
+                $this->assertSameInBlock('Log error', $report->getName());
+                $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
+                $this->assertSameInBlock('error', $report->getSeverityReason()['attributes']['level']);
+                $this->assertSameInBlock('faa', $report->getMetaData()['bar']);
+            });
+        $logger->error('hi', ['bar' => 'faa']);
+
         $client->shouldReceive('leaveBreadcrumb')
             ->once()
             ->withArgs(['Log warning', 'log', ['foo' => 'baz', 'message' => 'hi']]);
-
-        $logger = new BugsnagLogger($client);
         $logger->warning('hi', ['foo' => 'baz']);
 
-        $logger->error('hi', ['bar' => 'fuu']);
+        $client->shouldReceive('leaveBreadcrumb')
+            ->once()
+            ->withArgs(['Log notice', 'log', ['foo' => 'baz', 'message' => 'hi']]);
+        $logger->notice('hi', ['foo' => 'baz']);
+
+        $client->shouldReceive('leaveBreadcrumb')
+            ->once()
+            ->withArgs(['Log debug', 'log', ['foo' => 'baz', 'message' => 'hi']]);
+        $logger->debug('hi', ['foo' => 'baz']);
+
+        $client->shouldReceive('leaveBreadcrumb')
+            ->once()
+            ->withArgs(['Log info', 'log', ['foo' => 'baz', 'message' => 'hi']]);
+        $logger->info('hi', ['foo' => 'baz']);
+    }
+
+    /**
+     * Makeshift assertion to ensure test context not lost within closures
+     */
+    private function assertSameInBlock($expected, $actual)
+    {
+        if ($expected != $actual)
+        {
+            throw new Exception("Expected '" . $expected . "' received '" . $actual . "'");
+        }
     }
 }
