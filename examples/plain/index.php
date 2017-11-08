@@ -7,7 +7,7 @@ $logger = new Bugsnag\PsrLogger\BugsnagLogger($bugsnag);
 $logger->setNotifyLevel(\Psr\Log\LogLevel::ERROR);
 
 // Add breadcrumbs for low-severity log messages
-$logger->notice("Reticulating splines");
+$logger->notice('Reticulating splines');
 
 // Log an exception to Bugsnag
-$logger->error(new Exception("Invalid configuration at runtime"));
+$logger->error(new Exception('Invalid configuration at runtime'));

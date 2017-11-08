@@ -146,7 +146,7 @@ class BugsnagLoggerTest extends TestCase
                 $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
                 $this->assertSameInBlock('alert', $report->getSeverityReason()['attributes']['level']);
                 $this->assertSameInBlock('baz', $report->getMetaData()['foo']);
-        });
+            });
 
         $logger = new BugsnagLogger($client);
         $logger->alert('hi!', ['foo' => 'baz']);
@@ -168,7 +168,7 @@ class BugsnagLoggerTest extends TestCase
                 $this->assertSameInBlock('log', $report->getSeverityReason()['type']);
                 $this->assertSameInBlock('alert', $report->getSeverityReason()['attributes']['level']);
                 $this->assertSameInBlock('fuu', $report->getMetaData()['bar']);
-        });
+            });
         $logger->alert('hi', ['bar' => 'fuu']);
 
         $client->shouldReceive('notify')->once()
@@ -223,13 +223,12 @@ class BugsnagLoggerTest extends TestCase
     }
 
     /**
-     * Makeshift assertion to ensure test context not lost within closures
+     * Makeshift assertion to ensure test context not lost within closures.
      */
     private function assertSameInBlock($expected, $actual)
     {
-        if ($expected != $actual)
-        {
-            throw new Exception("Expected '" . $expected . "' received '" . $actual . "'");
+        if ($expected != $actual) {
+            throw new Exception("Expected '".$expected."' received '".$actual."'");
         }
     }
 }
