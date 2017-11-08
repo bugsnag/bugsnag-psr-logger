@@ -25,20 +25,6 @@ class BugsnagLogger extends AbstractLogger
     protected $notifyLevel;
 
     /**
-     * The minimum level required to set the notification level to 'warning'.
-     * 
-     * @var string
-     */
-    protected $warningLevel;
-
-    /**
-     * The minimum level required to set the notification level to 'error'.
-     * 
-     * @var string
-     */
-    protected $errorLevel;
-
-    /**
      * Create a new bugsnag logger instance.
      *
      * @param \Bugsnag\Client $client
@@ -48,10 +34,8 @@ class BugsnagLogger extends AbstractLogger
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $logLevels = $this->client->getConfig()->getLogLevels();
-        $this->notifyLevel = !is_null($logLevels["notifyLevel"]) ? $logLevels["notifyLevel"] : 'notice';
-        $this->warningLevel = !is_null($logLevels["warningLevel"]) ? $logLevels["warningLevel"] : 'warning';
-        $this->errorLevel = !is_null($logLevels["errorLevel"]) ? $logLevels["errorLevel"] : 'error';
+        $logNotifyLevel = $this->client->getConfig()->getLogLevel();
+        $this->notifyLevel = !is_null($logNotifyLevel) ? $logNotifyLevel : 'notice';
     }
 
     /**
@@ -143,9 +127,9 @@ class BugsnagLogger extends AbstractLogger
      */
     protected function getSeverity($level)
     {
-        if (!$this->aboveLevel($level, $this->warningLevel)) {
+        if (!$this->aboveLevel($level, 'notice')) {
             return 'info';
-        } elseif (!$this->aboveLevel($level, $this->errorLevel)) {
+        } elseif (!$this->aboveLevel($level, 'warning')) {
             return 'warning';
         } else {
             return 'error';
