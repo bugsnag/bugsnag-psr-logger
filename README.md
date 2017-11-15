@@ -44,6 +44,20 @@ $multiLogger = new Bugsnag\PsrLogger\MultiLogger([$logger, $mySecondLogger]);
 $multiLogger.error('An error occurred');
 ```
 
+The default level at which logs will be sent to Bugsnag is `Psr\Log\LogLevel::NOTICE`.  This can be overridden using the `setNotifyLevel` function:
+
+```php
+$logger = new Bugsnag\PsrLogger\BugsnagLogger($bugsnag);
+
+# Will not send a notification to bugsnag by default
+$logger->info('Some interesting information');
+
+$logger->setNotifyLevel(Psr\Log\LogLevel::INFO);
+
+# Will send a notification to bugsnag
+$logger->info('Some more interesting information');
+```
+
 
 For more information on integrating the loggers into specific frameworks see the individual setup information found in the [bugsnag-php documentation](https://docs.bugsnag.com/platforms/php/).
 
