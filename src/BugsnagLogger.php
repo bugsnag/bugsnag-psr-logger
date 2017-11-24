@@ -19,6 +19,7 @@ class BugsnagLogger extends AbstractLogger
 
     /**
      * The minimum level required to notify bugsnag.
+     * Logs underneath this level will be converted into breadcrumbs.
      *
      * @var string
      */
