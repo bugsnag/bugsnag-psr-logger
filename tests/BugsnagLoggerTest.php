@@ -6,6 +6,7 @@ use Bugsnag\Client;
 use Bugsnag\Configuration;
 use Bugsnag\PsrLogger\BugsnagLogger;
 use Exception;
+use TypeError;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -220,6 +221,19 @@ class BugsnagLoggerTest extends TestCase
             ->once()
             ->withArgs(['Log info', 'log', ['foo' => 'baz', 'message' => 'hi']]);
         $logger->info('hi', ['foo' => 'baz']);
+    }
+
+    /**
+     * @expectedException TypeError
+     */
+    public function testInvalidLogLevelThrows()
+    {
+        $config = Mockery::mock(Configuration::class)->makePartial();
+        $client = Mockery::mock(Client::class)->makePartial();
+        $client->shouldReceive('getConfig')->andReturn($config);
+
+        $logger = new BugsnagLogger($client);
+        $logger->setNotifyLevel('not a real log level');
     }
 
     /**

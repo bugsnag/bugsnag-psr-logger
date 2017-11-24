@@ -5,6 +5,7 @@ namespace Bugsnag\PsrLogger;
 use Bugsnag\Client;
 use Bugsnag\Report;
 use Exception;
+use TypeError;
 use Psr\Log\LogLevel;
 use Throwable;
 
@@ -37,8 +38,18 @@ class BugsnagLogger extends AbstractLogger
         $this->client = $client;
     }
 
+    /**
+     * Set the notifyLevel of the logger, as defined in Psr\Log\LogLevel.
+     * 
+     * @param string $notifyLevel
+     * 
+     * @return void
+     */
     public function setNotifyLevel($notifyLevel)
     {
+        if (!in_array($notifyLevel, $this->getLogLevelOrder())) {
+            throw new TypeError("notifyLevel must be a valid Psr\Log\LogLevel value");
+        }
         $this->notifyLevel = $notifyLevel;
     }
 
@@ -107,7 +118,19 @@ class BugsnagLogger extends AbstractLogger
      */
     protected function aboveLevel($level, $base)
     {
-        $levelOrder = [
+        $levelOrder = $this->getLogLevelOrder();
+        $baseIndex = array_search($base, $levelOrder);
+        $levelIndex = array_search($level, $levelOrder);
+
+        return $levelIndex >= $baseIndex;
+    }
+
+    /**
+     * Returns a list of log levels in order.
+     */
+    protected function getLogLevelOrder()
+    {
+        return [
             LogLevel::DEBUG,
             LogLevel::INFO,
             LogLevel::NOTICE,
@@ -116,10 +139,6 @@ class BugsnagLogger extends AbstractLogger
             LogLevel::ALERT,
             LogLevel::EMERGENCY,
         ];
-        $baseIndex = array_search($base, $levelOrder);
-        $levelIndex = array_search($level, $levelOrder);
-
-        return $levelIndex >= $baseIndex;
     }
 
     /**
