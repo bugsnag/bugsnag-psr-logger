@@ -48,9 +48,10 @@ class BugsnagLogger extends AbstractLogger
     public function setNotifyLevel($notifyLevel)
     {
         if (!in_array($notifyLevel, $this->getLogLevelOrder())) {
-            throw new TypeError("notifyLevel must be a valid Psr\Log\LogLevel value");
+            syslog(LOG_WARNING, 'Bugsnag Warning: Invalid notify level supplied to Bugsnag Logger');
+        } else {
+            $this->notifyLevel = $notifyLevel;
         }
-        $this->notifyLevel = $notifyLevel;
     }
 
     /**
