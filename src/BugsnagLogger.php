@@ -5,7 +5,6 @@ namespace Bugsnag\PsrLogger;
 use Bugsnag\Client;
 use Bugsnag\Report;
 use Exception;
-use TypeError;
 use Psr\Log\LogLevel;
 use Throwable;
 

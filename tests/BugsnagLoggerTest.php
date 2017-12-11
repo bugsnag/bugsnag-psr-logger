@@ -1,6 +1,6 @@
 <?php
 
-namespace Bugsnag\PsrLogger\Tests;
+namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Bugsnag\Configuration;
@@ -14,6 +14,17 @@ use PHPUnit_Framework_TestCase as TestCase;
 class ReportStub
 {
     const LOG_LEVEL = 'log_level';
+}
+
+global $sysprio;
+global $sysmes;
+
+function syslog($priority, $message) {
+    global $sysprio;
+    global $sysmes;
+
+    $sysprio = $priority;
+    $sysmes = $message;
 }
 
 /**
@@ -223,17 +234,22 @@ class BugsnagLoggerTest extends TestCase
         $logger->info('hi', ['foo' => 'baz']);
     }
 
-    /**
-     * @expectedException TypeError
-     */
-    public function testInvalidLogLevelThrows()
+    public function testInvalidLogLevelCallsSyslog()
     {
         $config = Mockery::mock(Configuration::class)->makePartial();
         $client = Mockery::mock(Client::class)->makePartial();
         $client->shouldReceive('getConfig')->andReturn($config);
 
+        global $sysprio;
+        global $sysmes;
+
+        $sysprio = null;
+        $sysmes = null;
+
         $logger = new BugsnagLogger($client);
         $logger->setNotifyLevel('not a real log level');
+        $this->assertEquals($sysprio, LOG_WARNING);
+        $this->assertEquals($sysmes, 'Bugsnag Warning: Invalid notify level supplied to Bugsnag Logger');
     }
 
     /**
