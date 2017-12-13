@@ -2,7 +2,6 @@
 
 namespace Bugsnag\PsrLogger;
 
-use Bugsnag\PsrLogger\MultiLogger;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;

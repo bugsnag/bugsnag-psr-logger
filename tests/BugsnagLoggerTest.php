@@ -4,9 +4,7 @@ namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Bugsnag\Configuration;
-use Bugsnag\PsrLogger\BugsnagLogger;
 use Exception;
-use TypeError;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -19,7 +17,8 @@ class ReportStub
 global $sysprio;
 global $sysmes;
 
-function syslog($priority, $message) {
+function syslog($priority, $message)
+{
     global $sysprio;
     global $sysmes;
 

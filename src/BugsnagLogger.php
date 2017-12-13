@@ -39,9 +39,9 @@ class BugsnagLogger extends AbstractLogger
 
     /**
      * Set the notifyLevel of the logger, as defined in Psr\Log\LogLevel.
-     * 
+     *
      * @param string $notifyLevel
-     * 
+     *
      * @return void
      */
     public function setNotifyLevel($notifyLevel)
