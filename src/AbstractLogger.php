@@ -2,9 +2,7 @@
 
 namespace Bugsnag\PsrLogger;
 
-use Psr\Log\LoggerInterface;
-
-abstract class AbstractLogger implements LoggerInterface
+abstract class AbstractLogger implements \Psr\Log\LoggerInterface
 {
     /**
      * Log an emergency message to the logs.
