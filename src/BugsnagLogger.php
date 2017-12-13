@@ -5,6 +5,7 @@ namespace Bugsnag\PsrLogger;
 use Bugsnag\Client;
 use Bugsnag\Report;
 use Exception;
+use Psr\Log\LogLevel;
 use Throwable;
 
 class BugsnagLogger extends AbstractLogger
@@ -15,6 +16,14 @@ class BugsnagLogger extends AbstractLogger
      * @var \Bugsnag\Client
      */
     protected $client;
+
+    /**
+     * The minimum level required to notify bugsnag.
+     * Logs underneath this level will be converted into breadcrumbs.
+     *
+     * @var string
+     */
+    protected $notifyLevel = \Psr\Log\LogLevel::NOTICE;
 
     /**
      * Create a new bugsnag logger instance.
@@ -29,6 +38,22 @@ class BugsnagLogger extends AbstractLogger
     }
 
     /**
+     * Set the notifyLevel of the logger, as defined in Psr\Log\LogLevel.
+     *
+     * @param string $notifyLevel
+     *
+     * @return void
+     */
+    public function setNotifyLevel($notifyLevel)
+    {
+        if (!in_array($notifyLevel, $this->getLogLevelOrder())) {
+            syslog(LOG_WARNING, 'Bugsnag Warning: Invalid notify level supplied to Bugsnag Logger');
+        } else {
+            $this->notifyLevel = $notifyLevel;
+        }
+    }
+
+    /**
      * Log a message to the logs.
      *
      * @param string $level
@@ -39,7 +64,7 @@ class BugsnagLogger extends AbstractLogger
      */
     public function log($level, $message, array $context = [])
     {
-        $title = 'Log ' . $level;
+        $title = 'Log '.$level;
         if (isset($context['title'])) {
             $title = $context['title'];
             unset($context['title']);
@@ -48,11 +73,12 @@ class BugsnagLogger extends AbstractLogger
         $exception = null;
         if (isset($context['exception']) && ($context['exception'] instanceof Exception || $context['exception'] instanceof Throwable)) {
             $exception = $context['exception'];
-        } else if ($message instanceof Exception || $message instanceof Throwable) {
+        } elseif ($message instanceof Exception || $message instanceof Throwable) {
             $exception = $message;
         }
 
-        if ($level === 'debug' || $level === 'info') {
+        // Below theshold, leave a breadcrumb but don't send a notification
+        if (!$this->aboveLevel($level, $this->notifyLevel)) {
             if ($exception !== null) {
                 $title = get_class($exception);
                 $data = ['name' => $title, 'message' => $exception->getMessage()];
@@ -70,8 +96,8 @@ class BugsnagLogger extends AbstractLogger
         $severityReason = [
             'type' => 'log',
             'attributes' => [
-                'level' => $level
-            ]
+                'level' => $level,
+            ],
         ];
 
         if ($exception !== null) {
@@ -88,6 +114,34 @@ class BugsnagLogger extends AbstractLogger
     }
 
     /**
+     * Checks whether the selected level is above another level.
+     */
+    protected function aboveLevel($level, $base)
+    {
+        $levelOrder = $this->getLogLevelOrder();
+        $baseIndex = array_search($base, $levelOrder);
+        $levelIndex = array_search($level, $levelOrder);
+
+        return $levelIndex >= $baseIndex;
+    }
+
+    /**
+     * Returns a list of log levels in order.
+     */
+    protected function getLogLevelOrder()
+    {
+        return [
+            LogLevel::DEBUG,
+            LogLevel::INFO,
+            LogLevel::NOTICE,
+            LogLevel::ERROR,
+            LogLevel::CRITICAL,
+            LogLevel::ALERT,
+            LogLevel::EMERGENCY,
+        ];
+    }
+
+    /**
      * Get the severity for the logger.
      *
      * @param string $level
@@ -96,15 +150,13 @@ class BugsnagLogger extends AbstractLogger
      */
     protected function getSeverity($level)
     {
-        if ($level === 'notice') {
+        if (!$this->aboveLevel($level, 'notice')) {
             return 'info';
-        }
-
-        if ($level === 'warning') {
+        } elseif (!$this->aboveLevel($level, 'warning')) {
             return 'warning';
+        } else {
+            return 'error';
         }
-
-        return 'error';
     }
 
     /**
