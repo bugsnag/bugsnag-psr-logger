@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 1.3.0 (2017-12-14)
+
+### Enhancements
+
+* Added log-level configuration option
+  [#23](https://github.com/bugsnag/bugsnag-psr-logger/pull/23)
+
 ## 1.2.1 (2017-10-06)
 
 ### Bug fixes
