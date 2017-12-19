@@ -134,6 +134,7 @@ class BugsnagLogger extends AbstractLogger
             LogLevel::DEBUG,
             LogLevel::INFO,
             LogLevel::NOTICE,
+            LogLevel::WARNING,
             LogLevel::ERROR,
             LogLevel::CRITICAL,
             LogLevel::ALERT,
