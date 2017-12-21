@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## 1.4.0 (2017-12-21)
+
+### Enhancements
+
+* Bumped Bugsnag-PHP version to 3.10 to enable `addMetaData` functionality
+
+### Fixes
+
+* Fixed issue where not all log-levels are present, preventing warning notifications
+  [#29](https://github.com/bugsnag/bugsnag-psr-logger/pull/29)
+
 ## 1.3.0 (2017-12-14)
 
 ### Enhancements
