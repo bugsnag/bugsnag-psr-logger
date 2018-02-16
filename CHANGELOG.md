@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## 1.4.1 (2018-02-16)
+
+### Bug fixes
+
+* Unset exception context before forwarding metadata to the error report. This
+  removes the extraneous 'Exception' tab from error reports.
+  [#30](https://github.com/bugsnag/bugsnag-psr-logger/pull/30)
+  [Graham Campbell](https://github.com/GrahamCampbell)
+
 ## 1.4.0 (2017-12-21)
 
 ### Enhancements
