@@ -19,3 +19,4 @@ Releasing
     git push origin master && git push --tags
     ```
 4. Update the setup guides for PHP (and its frameworks) with any new content.
+5. Bump the branch alias to the next minor version from the released version.
