@@ -29,7 +29,7 @@ $bugsnag = Bugsnag\Client::make('YOUR-API-KEY-HERE');
 $logger = new Bugsnag\PsrLogger\BugsnagLogger($bugsnag);
 
 # Will send a notification to bugsnag
-$logger.error('An error occurred');
+$logger->error('An error occurred');
 ```
 
 
@@ -41,7 +41,7 @@ $mySecondLogger = new Logger();
 $multiLogger = new Bugsnag\PsrLogger\MultiLogger([$logger, $mySecondLogger]);
 
 # Will log to $mySecondLogger and send a notification to bugsnag through $logger
-$multiLogger.error('An error occurred');
+$multiLogger->error('An error occurred');
 ```
 
 The default level at which logs will be sent to Bugsnag is `Psr\Log\LogLevel::NOTICE`.  This can be overridden using the `setNotifyLevel` function:
