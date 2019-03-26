@@ -19,11 +19,12 @@ class BugsnagLogger extends AbstractLogger
 
     /**
      * The minimum level required to notify bugsnag.
+     *
      * Logs underneath this level will be converted into breadcrumbs.
      *
      * @var string
      */
-    protected $notifyLevel = \Psr\Log\LogLevel::NOTICE;
+    protected $notifyLevel = LogLevel::NOTICE;
 
     /**
      * Create a new bugsnag logger instance.
@@ -116,6 +117,11 @@ class BugsnagLogger extends AbstractLogger
 
     /**
      * Checks whether the selected level is above another level.
+     *
+     * @param string $level
+     * @param string $base
+     *
+     * @return bool
      */
     protected function aboveLevel($level, $base)
     {
@@ -127,7 +133,9 @@ class BugsnagLogger extends AbstractLogger
     }
 
     /**
-     * Returns a list of log levels in order.
+     * Returns the log levels in order.
+     *
+     * @return string[]
      */
     protected function getLogLevelOrder()
     {
