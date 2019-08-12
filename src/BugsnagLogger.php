@@ -27,6 +27,27 @@ class BugsnagLogger extends AbstractLogger
     protected $notifyLevel = LogLevel::NOTICE;
 
     /**
+     * The level for the current log record.
+     *
+     * @var string|null
+     */
+    protected $level;
+
+    /**
+     * The message for the current log record.
+     *
+     * @var string|\Throwable
+     */
+    private $message;
+
+    /**
+     * The context for the current log record.
+     *
+     * @var mixed[]
+     */
+    private $context;
+
+    /**
      * Create a new bugsnag logger instance.
      *
      * @param \Bugsnag\Client $client
@@ -65,54 +86,53 @@ class BugsnagLogger extends AbstractLogger
      */
     public function log($level, $message, array $context = [])
     {
-        $title = 'Log '.$level;
-        if (isset($context['title'])) {
-            $title = $context['title'];
-            unset($context['title']);
-        }
+        $this->level = $level;
+        $this->message = $message;
+        $this->context = $context;
 
-        $exception = null;
-        if (isset($context['exception']) && ($context['exception'] instanceof Exception || $context['exception'] instanceof Throwable)) {
-            $exception = $context['exception'];
-            unset($context['exception']);
-        } elseif ($message instanceof Exception || $message instanceof Throwable) {
-            $exception = $message;
-        }
+        $title = $this->extractTitle();
+        $exception = $this->extractException();
 
-        // Below theshold, leave a breadcrumb but don't send a notification
+        // Below threshold, leave a breadcrumb and don't send a notification
         if (!$this->aboveLevel($level, $this->notifyLevel)) {
-            if ($exception !== null) {
-                $title = get_class($exception);
-                $data = ['name' => $title, 'message' => $exception->getMessage()];
-            } else {
-                $data = ['message' => $message];
-            }
-
-            $metaData = array_merge($data, $context);
-
-            $this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
+            $this->leaveBreadcrumb($exception, $title);
 
             return;
         }
 
-        $severityReason = [
-            'type' => 'log',
-            'attributes' => [
-                'level' => $level,
-            ],
-        ];
-
-        if ($exception !== null) {
-            $report = Report::fromPHPThrowable($this->client->getConfig(), $exception);
-        } else {
-            $report = Report::fromNamedError($this->client->getConfig(), $title, $this->formatMessage($message));
-        }
-
-        $report->setMetaData($context);
-        $report->setSeverity($this->getSeverity($level));
-        $report->setSeverityReason($severityReason);
+        $report = $this->buildReport($exception, $title);
 
         $this->client->notify($report);
+    }
+
+    /**
+     * @return string
+     */
+    protected function extractTitle()
+    {
+        $title = 'Log '.$this->level;
+        if (isset($context['title'])) {
+            $title = $this->context['title'];
+            unset($this->context['title']);
+        }
+
+        return $title;
+    }
+
+    /**
+     * @return \Throwable|null
+     */
+    protected function extractException()
+    {
+        $exception = null;
+        if (isset($this->context['exception']) && ($this->context['exception'] instanceof Exception || $this->context['exception'] instanceof Throwable)) {
+            $exception = $this->context['exception'];
+            unset($this->context['exception']);
+        } elseif ($this->message instanceof Exception || $this->message instanceof Throwable) {
+            $exception = $this->message;
+        }
+
+        return $exception;
     }
 
     /**
@@ -149,6 +169,48 @@ class BugsnagLogger extends AbstractLogger
             LogLevel::ALERT,
             LogLevel::EMERGENCY,
         ];
+    }
+
+    /**
+     * @param \Throwable|null $exception
+     *
+     * @return void
+     */
+    protected function leaveBreadcrumb($exception, $title)
+    {
+        if ($exception !== null) {
+            $title = get_class($exception);
+            $data = ['name' => $title, 'message' => $exception->getMessage()];
+        } else {
+            $data = ['message' => $this->message];
+        }
+
+        $metaData = array_merge($data, $this->context);
+
+        $this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
+    }
+
+    /**
+     * @return Report
+     */
+    protected function buildReport($exception, $title)
+    {
+        if ($exception !== null) {
+            $report = Report::fromPHPThrowable($this->client->getConfig(), $exception);
+        } else {
+            $report = Report::fromNamedError($this->client->getConfig(), $title, $this->formatMessage($this->message));
+        }
+
+        $report->setMetaData($this->context);
+        $report->setSeverity($this->getSeverity($this->level));
+        $report->setSeverityReason([
+            'type' => 'log',
+            'attributes' => [
+                'level' => $this->level,
+            ],
+        ]);
+
+        return $report;
     }
 
     /**
