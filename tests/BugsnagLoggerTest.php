@@ -86,8 +86,6 @@ class BugsnagLoggerTest extends TestCase
 
     public function testContextExceptionInvalidOverride()
     {
-        $exception = new Exception();
-
         $config = Mockery::mock(Configuration::class);
         $config->shouldReceive('getLogLevel')->andReturn(null);
 
@@ -107,6 +105,36 @@ class BugsnagLoggerTest extends TestCase
 
         $logger = new BugsnagLogger($client);
         $logger->log('error', 'terrible things!', ['exception' => 'not an exception']);
+    }
+
+    /**
+     * Assert that 'unhandledException' key in log's $context will be
+     * used to set the unhandledException attribute in the Report.
+     */
+    public function testContextUnhandledExceptionOverride()
+    {
+        $exception = new Exception();
+
+        $config = Mockery::mock(Configuration::class);
+        $config->shouldReceive('getLogLevel')->andReturn(null);
+
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromPHPThrowable')
+               ->with($config, $exception)
+               ->once()
+               ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('error');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'error']]);
+        $report->shouldReceive('setUnhandled')->once()->with(true);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->andReturn($config);
+        $client->shouldReceive('notify')->once()->with($report);
+        $client->shouldNotReceive('leaveBreadcrumb');
+
+        $logger = new BugsnagLogger($client);
+        $logger->log('error', 'terrible things!', ['exception' => $exception, 'unhandledException' => true]);
     }
 
     public function testInfo()

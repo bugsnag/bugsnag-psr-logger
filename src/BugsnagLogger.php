@@ -210,6 +210,11 @@ class BugsnagLogger extends AbstractLogger
             ],
         ]);
 
+        if (isset($this->context['unhandledException']) && is_bool($this->context['unhandledException'])) {
+            $report->setUnhandled($this->context['unhandledException']);
+            unset($this->context['unhandledException']);
+        }
+
         return $report;
     }
 
