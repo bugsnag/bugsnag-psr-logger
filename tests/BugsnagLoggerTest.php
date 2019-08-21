@@ -109,6 +109,31 @@ class BugsnagLoggerTest extends TestCase
         $logger->log('error', 'terrible things!', ['exception' => 'not an exception']);
     }
 
+    public function testWarn()
+    {
+        $exception = new Exception();
+
+        $config = Mockery::mock(Configuration::class);
+        $config->shouldReceive('getLogLevel')->andReturn(null);
+
+        $report = Mockery::namedMock('Bugsnag\Report', ReportStub::class);
+        $report->shouldReceive('fromPHPThrowable')
+            ->with($config, $exception)
+            ->once()
+            ->andReturn($report);
+        $report->shouldReceive('setMetaData')->once()->with(Mockery::any());
+        $report->shouldReceive('setSeverity')->once()->with('warning');
+        $report->shouldReceive('setSeverityReason')->once()->with(['type' => 'log', 'attributes' => ['level' => 'warning']]);
+
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('getConfig')->andReturn($config);
+        $client->shouldReceive('notify')->once()->with($report);
+        $client->shouldNotReceive('leaveBreadcrumb');
+
+        $logger = new BugsnagLogger($client);
+        $logger->log('warning', 'terrible things!', ['exception' => $exception]);
+    }
+
     public function testInfo()
     {
         $config = Mockery::mock(Configuration::class);

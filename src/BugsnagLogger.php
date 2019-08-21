@@ -160,12 +160,12 @@ class BugsnagLogger extends AbstractLogger
      */
     protected function getSeverity($level)
     {
-        if (!$this->aboveLevel($level, 'notice')) {
-            return 'info';
-        } elseif (!$this->aboveLevel($level, 'warning')) {
+        if ($this->aboveLevel($level, 'error')) {
+            return 'error';
+        } elseif ($this->aboveLevel($level, 'warning')) {
             return 'warning';
         } else {
-            return 'error';
+            return 'info';
         }
     }
 
