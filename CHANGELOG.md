@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix warnings being set with error severity in event (fixes [#35](https://github.com/bugsnag/bugsnag-psr-logger/issues/35))
+[#37](https://github.com/bugsnag/bugsnag-psr-logger/pull/37)
+
 ## 1.4.1 (2018-02-16)
 
 ### Bug fixes
