@@ -7,7 +7,7 @@ use Bugsnag\Configuration;
 use Exception;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class ReportStub
 {
