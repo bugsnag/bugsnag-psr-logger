@@ -1,12 +1,20 @@
 Changelog
 =========
 
+## 1.4.3 (2020-02-26)
+
+### Bug fixes
+
+* Added support for PHP 7.2, 7.3 and 7.4
+  [#38](https://github.com/bugsnag/bugsnag-psr-logger/pull/38)
+
 ## 1.4.2 (2019-08-28)
 
 ### Bug fixes
 
-* Fix warnings being set with error severity in event (fixes [#35](https://github.com/bugsnag/bugsnag-psr-logger/issues/35))
-[#37](https://github.com/bugsnag/bugsnag-psr-logger/pull/37)
+* Fix warnings being set with error severity in event
+  (fixes [#35](https://github.com/bugsnag/bugsnag-psr-logger/issues/35))
+  [#37](https://github.com/bugsnag/bugsnag-psr-logger/pull/37)
 
 ## 1.4.1 (2018-02-16)
 
