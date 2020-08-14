@@ -11,7 +11,7 @@ When contacting support, please include as much information as necessary, includ
 
 * Bugsnag version:
 * PHP version:
-* PSR version:
+* PSR-3 implementation and version:
 
 ## Bug or Feature Requests
 If you would like to raise a bug or feature request please do so by creating a [New Issue](https://github.com/bugsnag/bugsnag-psr-logger/issues/new/choose) and selecting bug or feature.

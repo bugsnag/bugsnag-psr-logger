@@ -21,7 +21,7 @@ A clear and concise description of what the bug is.
 ### Environment
 * Bugsnag version:
 * PHP version:
-* PSR version:
+* PSR-3 implementation and version:
 
 <!--
   Below are a few approaches you might take to communicate the issue, in
