@@ -7,8 +7,6 @@
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /.styleci.yml
-/.travis.yml export-ignore
-/phpunit.xml.dist export-ignore
 /CONTRIBUTING.md export-ignore
 /CHANGELOG.md export-ignore
 /README.md export-ignore
