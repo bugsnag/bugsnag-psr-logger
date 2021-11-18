@@ -8,7 +8,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [ 5.5, 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0 ]
+        php-version: ['5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0']
+        psr-log-version: ['^1.0']
+
+        include:
+          - php-version: '8.0'
+            psr-log-version: '^2.0'
 
     steps:
     - uses: actions/checkout@v2
@@ -19,6 +24,8 @@ jobs:
         php-version: ${{ matrix.php-version }}
 
     - run: composer validate
+
+    - run: composer require psr/log:${{ matrix.psr-log-version }} --no-update
 
     - name: install dependencies
       run: composer update --prefer-dist --no-progress --no-interaction ${{ matrix.composer-flags }}
