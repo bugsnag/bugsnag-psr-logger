@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.4.4 (TBD)
+## 1.4.4 (2021-11-18)
 
 * Added support for PSR Log v2
   [#46](https://github.com/bugsnag/bugsnag-psr-logger/pull/46)
