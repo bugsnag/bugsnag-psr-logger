@@ -33,4 +33,12 @@ class MultiLoggerTest extends TestCase
 
         $multi->warning('hi!', ['foo' => 'baz']);
     }
+
+    public function testIsAbstractLogger()
+    {
+        $one = Mockery::mock(LoggerInterface::class);
+        $logger = new MultiLogger([$one]);
+
+        $this->assertInstanceOf(AbstractLogger::class, $logger);
+    }
 }
