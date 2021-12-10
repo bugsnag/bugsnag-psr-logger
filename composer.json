@@ -13,7 +13,7 @@
     "require": {
         "php": ">=8.0",
         "bugsnag/bugsnag": "^3.10",
-        "psr/log": "^1.0|^2.0|^3.0"
+        "psr/log": "^2.0|^3.0"
     },
     "require-dev": {
         "graham-campbell/testbench-core": "^1.1",
