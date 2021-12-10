@@ -10,6 +10,8 @@ Changelog
 
 ## 1.4.4 (2021-11-18)
 
+### Enhancements
+
 * Added support for PSR Log v2
   [#46](https://github.com/bugsnag/bugsnag-psr-logger/pull/46)
 
