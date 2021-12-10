@@ -4,7 +4,6 @@ namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Bugsnag\Report;
-use Exception;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 use Throwable;
@@ -73,10 +72,10 @@ class BugsnagLogger extends AbstractLogger
         }
 
         $exception = null;
-        if (isset($context['exception']) && ($context['exception'] instanceof Exception || $context['exception'] instanceof Throwable)) {
+        if (isset($context['exception']) && $context['exception'] instanceof Throwable) {
             $exception = $context['exception'];
             unset($context['exception']);
-        } elseif ($message instanceof Exception || $message instanceof Throwable) {
+        } elseif ($message instanceof Throwable) {
             $exception = $message;
         }
 
