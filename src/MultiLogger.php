@@ -11,7 +11,7 @@ class MultiLogger extends AbstractLogger
      *
      * @var \Psr\Log\LoggerInterface[]
      */
-    protected $loggers;
+    protected array $loggers;
 
     /**
      * Create a new multi logger instance.
@@ -34,7 +34,7 @@ class MultiLogger extends AbstractLogger
      *
      * @return void
      */
-    public function log($level, $message, array $context = []): void
+    public function log(mixed $level, string|\Stringable $message, array $context = []): void
     {
         foreach ($this->loggers as $logger) {
             $logger->log($level, $message, $context);

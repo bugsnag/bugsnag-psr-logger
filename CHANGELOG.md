@@ -7,7 +7,7 @@ Changelog
 
 * PSR Log v1 is no longer supported. Use `bugsnag/bugsnag-psr-logger:^1.0` for PSR Log v1 support
 * Removed `Bugsnag\PsrLogger\AbstractLogger` in favour of using `Psr\Log\AbstractLogger` directly
-* Added `void` return type to `Bugsnag\PsrLogger\BugsnagLogger` and `Bugsnag\PsrLogger\MultiLogger`
+* Added parameter and return types throughout `Bugsnag\PsrLogger\BugsnagLogger` and `Bugsnag\PsrLogger\MultiLogger`
 
 ## 1.4.5 (2021-12-13)
 
