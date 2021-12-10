@@ -6,6 +6,7 @@ Changelog
 ### Breaking changes
 
 * Removed `Bugsnag\PsrLogger\AbstractLogger` in favour of using `Psr\Log\AbstractLogger` directly
+* Added `void` return type to `Bugsnag\PsrLogger\BugsnagLogger` and `Bugsnag\PsrLogger\MultiLogger`
 
 ## 1.4.5 (2021-12-13)
 
