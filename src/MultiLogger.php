@@ -28,9 +28,9 @@ class MultiLogger extends AbstractLogger
     /**
      * Log a message to the logs.
      *
-     * @param string $level
-     * @param mixed  $message
-     * @param array  $context
+     * @param mixed              $level
+     * @param string|\Stringable $message
+     * @param mixed[]            $context
      *
      * @return void
      */
