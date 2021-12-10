@@ -184,20 +184,4 @@ class BugsnagLogger extends AbstractLogger
 
         return (string) $message;
     }
-
-    /**
-     * Ensure the given string is less than 100 characters.
-     *
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function limit(string $str): string
-    {
-        if (strlen($str) <= 100) {
-            return $str;
-        }
-
-        return rtrim(substr($str, 0, 97)).'...';
-    }
 }
