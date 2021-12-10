@@ -5,6 +5,7 @@ namespace Bugsnag\PsrLogger;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class MultiLoggerTest extends TestCase
 {
@@ -34,11 +35,11 @@ class MultiLoggerTest extends TestCase
         $multi->warning('hi!', ['foo' => 'baz']);
     }
 
-    public function testIsAbstractLogger()
+    public function testIsLoggerInterface()
     {
         $one = Mockery::mock(LoggerInterface::class);
         $logger = new MultiLogger([$one]);
 
-        $this->assertInstanceOf(AbstractLogger::class, $logger);
+        $this->assertInstanceOf(LoggerInterface::class, $logger);
     }
 }

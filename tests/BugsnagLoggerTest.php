@@ -8,6 +8,7 @@ use Exception;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class ReportStub
 {
@@ -276,12 +277,12 @@ class BugsnagLoggerTest extends TestCase
         $this->assertEquals($sysmes, 'Bugsnag Warning: Invalid notify level supplied to Bugsnag Logger');
     }
 
-    public function testIsAbstractLogger()
+    public function testIsLoggerInterface()
     {
         $client = Mockery::mock(Client::class);
         $logger = new BugsnagLogger($client);
 
-        $this->assertInstanceOf(AbstractLogger::class, $logger);
+        $this->assertInstanceOf(LoggerInterface::class, $logger);
     }
 
     /**

@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 2.0.0 (TBD)
+
+### Breaking changes
+
+* Removed `Bugsnag\PsrLogger\AbstractLogger` in favour of using `Psr\Log\AbstractLogger` directly
+
 ## 1.4.5 (2021-12-13)
 
 ### Deprecations

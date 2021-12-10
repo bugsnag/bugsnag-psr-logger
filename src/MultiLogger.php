@@ -2,6 +2,8 @@
 
 namespace Bugsnag\PsrLogger;
 
+use Psr\Log\AbstractLogger;
+
 class MultiLogger extends AbstractLogger
 {
     /**
