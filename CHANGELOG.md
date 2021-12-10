@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 1.4.5 (2021-12-13)
 
 ### Deprecations
 
