@@ -276,6 +276,14 @@ class BugsnagLoggerTest extends TestCase
         $this->assertEquals($sysmes, 'Bugsnag Warning: Invalid notify level supplied to Bugsnag Logger');
     }
 
+    public function testIsAbstractLogger()
+    {
+        $client = Mockery::mock(Client::class);
+        $logger = new BugsnagLogger($client);
+
+        $this->assertInstanceOf(AbstractLogger::class, $logger);
+    }
+
     /**
      * Makeshift assertion to ensure test context not lost within closures.
      */

@@ -1,7 +1,16 @@
 Changelog
 =========
 
+## 1.4.5 (2021-12-13)
+
+### Deprecations
+
+* Deprecated `Bugsnag\PsrLogger\AbstractLogger` in favour of using `Psr\Log\AbstractLogger` directly. `Bugsnag\PsrLogger\AbstractLogger` will be removed in the next major version
+  [#49](https://github.com/bugsnag/bugsnag-psr-logger/pull/49)
+
 ## 1.4.4 (2021-11-18)
+
+### Enhancements
 
 * Added support for PSR Log v2
   [#46](https://github.com/bugsnag/bugsnag-psr-logger/pull/46)
