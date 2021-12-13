@@ -6,6 +6,9 @@ Changelog
 ### Breaking changes
 
 * PSR Log v1 is no longer supported. Use `bugsnag/bugsnag-psr-logger:^1.0` for PSR Log v1 support
+
+The following changes are breaking for users extending any of the classes provided by this package, but should not otherwise be noticeable:
+
 * Removed `Bugsnag\PsrLogger\AbstractLogger` in favour of using `Psr\Log\AbstractLogger` directly
 * Added parameter and return types throughout `Bugsnag\PsrLogger\BugsnagLogger` and `Bugsnag\PsrLogger\MultiLogger`
 * Removed protected `Bugsnag\PsrLogger\BugsnagLogger::limit` method
