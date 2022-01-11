@@ -1,7 +1,12 @@
 Changelog
 =========
 
-## 2.0.0 (TBD)
+## 2.0.0 (2022-01-12)
+
+### Enhancements
+
+* Support PSR Log v3
+  [#51](https://github.com/bugsnag/bugsnag-psr-logger/pull/51)
 
 ### Breaking changes
 
