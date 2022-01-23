@@ -29,5 +29,10 @@
         "psr-4" : {
             "Bugsnag\\PsrLogger\\Tests\\" : "tests/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     }
 }
