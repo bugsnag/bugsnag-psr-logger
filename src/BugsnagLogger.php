@@ -27,6 +27,16 @@ class BugsnagLogger extends AbstractLogger
     protected string $notifyLevel = LogLevel::NOTICE;
 
     /**
+     * The minimum level required to add a log as a breadcrumb (only if it is
+     * also below the notify level).
+     *
+     * Logs underneath this level will be ignored.
+     *
+     * @var string
+     */
+    protected string $breadcrumbLevel = LogLevel::DEBUG;
+
+    /**
      * Create a new bugsnag logger instance.
      *
      * @param \Bugsnag\Client $client
@@ -55,6 +65,22 @@ class BugsnagLogger extends AbstractLogger
     }
 
     /**
+     * Set the breadcrumbLevel of the logger, as defined in Psr\Log\LogLevel.
+     *
+     * @param string $breadcrumbLevel
+     *
+     * @return void
+     */
+    public function setBreadcrumbLevel(string $breadcrumbLevel): void
+    {
+        if (!in_array($breadcrumbLevel, $this->getLogLevelOrder())) {
+            syslog(LOG_WARNING, 'Bugsnag Warning: Invalid breadcrumb level supplied to Bugsnag Logger');
+        } else {
+            $this->breadcrumbLevel = $breadcrumbLevel;
+        }
+    }
+
+    /**
      * Log a message to the logs.
      *
      * @param mixed              $level
@@ -79,8 +105,13 @@ class BugsnagLogger extends AbstractLogger
             $exception = $message;
         }
 
-        // Below theshold, leave a breadcrumb but don't send a notification
+        // Below threshold, leave a breadcrumb but don't send a notification
         if (!$this->aboveLevel($level, $this->notifyLevel)) {
+            // Below threshold to add a breadcrumb
+            if (!$this->aboveLevel($level, $this->breadcrumbLevel)) {
+                return;
+            }
+
             if ($exception !== null) {
                 $title = get_class($exception);
                 $data = ['name' => $title, 'message' => $exception->getMessage()];
