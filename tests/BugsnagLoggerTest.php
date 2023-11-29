@@ -197,6 +197,7 @@ class BugsnagLoggerTest extends TestCase
 
         $logger = new BugsnagLogger($client);
         $logger->setNotifyLevel(\Psr\Log\LogLevel::ERROR);
+        $logger->setBreadcrumbLevel(\Psr\Log\LogLevel::INFO);
 
         $client->shouldReceive('notify')->once()
             ->andReturnUsing(function ($report) {
@@ -248,9 +249,7 @@ class BugsnagLoggerTest extends TestCase
             ->withArgs(['Log notice', 'log', ['foo' => 'baz', 'message' => 'hi']]);
         $logger->notice('hi', ['foo' => 'baz']);
 
-        $client->shouldReceive('leaveBreadcrumb')
-            ->once()
-            ->withArgs(['Log debug', 'log', ['foo' => 'baz', 'message' => 'hi']]);
+        $client->shouldNotReceive('leaveBreadcrumb');
         $logger->debug('hi', ['foo' => 'baz']);
 
         $client->shouldReceive('leaveBreadcrumb')
