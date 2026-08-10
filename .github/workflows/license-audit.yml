@@ -2,6 +2,9 @@ name: Audit bugsnag-psr-logger dependency licenses
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   license-audit:
     runs-on: ubuntu-latest
