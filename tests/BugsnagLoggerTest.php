@@ -4,6 +4,7 @@ namespace Bugsnag\PsrLogger;
 
 use Bugsnag\Client;
 use Bugsnag\Configuration;
+use Bugsnag\Internal\FeatureFlagDelegate;
 use Exception;
 use GrahamCampbell\TestBenchCore\MockeryTrait;
 use Mockery;
@@ -171,6 +172,7 @@ class BugsnagLoggerTest extends TestCase
     {
         $exception = new Exception();
         $config = Mockery::mock(Configuration::class)->makePartial();
+        $config->shouldReceive('getFeatureFlagsCopy')->andReturn(new FeatureFlagDelegate());
         $client = Mockery::mock(Client::class)->makePartial();
 
         $client->shouldReceive('getConfig')->andReturn($config);
@@ -192,6 +194,7 @@ class BugsnagLoggerTest extends TestCase
     public function testSetNotifyLevel()
     {
         $config = Mockery::mock(Configuration::class)->makePartial();
+        $config->shouldReceive('getFeatureFlagsCopy')->andReturn(new FeatureFlagDelegate());
         $client = Mockery::mock(Client::class)->makePartial();
         $client->shouldReceive('getConfig')->andReturn($config);
 
